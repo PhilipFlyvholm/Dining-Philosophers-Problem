@@ -1,23 +1,57 @@
 package main
 
+import "fmt"
+
 func main() {
-	makeForks()
-	makePhils()
+	fmt.Println("hey")
+	//var phil = makePhil(1, rightforkpointer, leftforkpointer)
+	//fmt.Println("made a philosopher his id is:", phil.id)
+	forks := make([]*Fork, 5)
+	for i := 0; i < 5; i++ {
+		var fork = makeFork()
+		forkp := &fork
+		forks[i] = forkp
+	}
+	philosophers := make([]Phil, 5)
+	var phil Phil
+	// link all philosophers together
+	for i := 0; i < 5; i++ {
+		phil = makePhil(i)
+		phil.leftFork = forks[i]
+		phil.rightFork = forks[(i+1)%5]
+		philosophers[i] = phil
+	}
+}
+
+func think() {
 
 }
 
+func eat() {
 
-func makeForks() {
-	var fork1 := Fork{make(chan string, 0), make(chan string, 0)}
-	var fork2 := Fork{make(chan string, 0), make(chan string, 0)}
-	var fork3 := Fork{make(chan string, 0), make(chan string, 0)}
-	var fork4 := Fork{make(chan string, 0), make(chan string, 0)}
-	var fork5 := Fork{make(chan string, 0), make(chan string, 0)}
 }
-func makePhils() {
-	var phil1 := Phil{&fork1, &fork2, make(chan string, 0), make(chan string, 0)}
-	var phil2 := Phil{&fork2, &fork3, make(chan string, 0), make(chan string, 0)}
-	var phil3 := Phil{&fork3, &fork4, make(chan string, 0), make(chan string, 0)}
-	var phil4 := Phil{&fork4, &fork5, make(chan string, 0), make(chan string, 0)}
-	var phil5 := Phil{&fork5, &fork1, make(chan string, 0), make(chan string, 0)}
+
+func makePhil(number int) Phil {
+	phil := Phil{number, nil, nil, false, make(chan bool, 1), make(chan bool, 1)}
+	return phil
+}
+
+func makeFork() Fork {
+	fork := Fork{false, make(chan bool, 0), make(chan bool, 0)}
+	return fork
+}
+
+type Fork struct {
+	inUse   bool
+	inputch chan bool
+	output  chan bool
+}
+
+type Phil struct {
+	id        int
+	rightFork *Fork
+	leftFork  *Fork
+	eating    bool
+	inputch   chan bool
+	outputch  chan bool
 }
