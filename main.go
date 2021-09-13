@@ -2,27 +2,65 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
+var forks []Fork
+var philosophers []Philosopher
+
+func calcNumOfForks(numOfPhils int) int {
+	if numOfPhils < 1 {
+		return 0
+	}
+	if numOfPhils == 1 {
+		return 2
+	}
+	return numOfPhils
+}
+
 func main() {
-	var forks = make([]Fork, 5)
-	for i := 0; i < 5; i++ {
-		forks[i] = Fork{id: i}
+	fmt.Println("Welcome to the dining philosophers")
+	var amountOfPhilosophers int = 5
+	amountOfForks := calcNumOfForks(amountOfPhilosophers)
+	fmt.Println("At the table we have", amountOfPhilosophers, "philosophers sharing", amountOfForks, "forks")
+	forks = make([]Fork, amountOfForks)
+	for i := 0; i < amountOfForks; i++ {
+		forks[i] = NewFork(i)
 		go forks[i].InnerLoop()
 	}
-	var philosophers = make([]Philosopher, 5)
-	for i := 0; i < 5; i++ {
+	philosophers = make([]Philosopher, 5)
+	for i := 0; i < amountOfPhilosophers; i++ {
 		var leftForkID = i - 1
 		if leftForkID < 0 {
-			leftForkID = 5
+			leftForkID = amountOfForks - 1
 		}
 		var rightForkID = i
-		philosophers[i] = Philosopher{id: i, leftFork: &forks[leftForkID], rightFork: &forks[rightForkID]}
-	}
+		philosophers[i] = NewPhilosopher(i, &forks[leftForkID], &forks[rightForkID])
 
-	fmt.Println("Welcome to the dining philosophers")
+		go philosophers[i].InnerLoop(true)
+	}
+	fmt.Println("Everything is setup")
+
+	printInfo(5)
+}
+
+func printInfo(seconds int) {
+	for _, fork := range forks {
+		fork.input <- Request{requestType: printState}
+	}
+	time.Sleep(time.Second * time.Duration(seconds))
+	printInfo(seconds)
 }
 
 type Request struct {
-	requester *Philosopher
+	requester   *Philosopher
+	requestType RequestType
 }
+
+type RequestType int
+
+const (
+	reserve    RequestType = iota // reserve = 0
+	dismiss                       // dismiss = 1
+	printState                    // printState = 2
+)
