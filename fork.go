@@ -13,7 +13,7 @@ type Fork struct {
 }
 
 func NewFork(_id int) Fork {
-	return Fork{id: _id, input: make(chan Request, 5), queue: make(chan *Philosopher, 2)}
+	return Fork{id: _id, input: make(chan Request, 2), queue: make(chan *Philosopher, 2)}
 }
 
 type ForkState struct {
