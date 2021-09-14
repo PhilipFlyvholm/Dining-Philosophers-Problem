@@ -44,7 +44,7 @@ func (p *Philosopher) InnerLoop(startWithReserve bool) {
 	for {
 		timeout := make(chan bool, 1)
 		go func() {
-			time.Sleep(time.Second * 4)
+			time.Sleep(time.Second * 7)
 			timeout <- true
 		}()
 		select {
@@ -60,7 +60,7 @@ func (p *Philosopher) InnerLoop(startWithReserve bool) {
 			}
 		case <-timeout:
 			p.think()
-			fmt.Println("Timeout Happened")
+			//fmt.Println("Timeout Happened", p.id)
 		}
 	}
 }

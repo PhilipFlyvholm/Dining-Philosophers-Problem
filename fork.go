@@ -13,7 +13,7 @@ type Fork struct {
 }
 
 func NewFork(_id int) Fork {
-	return Fork{id: _id, input: make(chan Request, 5), queue: make(chan *Philosopher, 2)}
+	return Fork{id: _id, input: make(chan Request, 2), queue: make(chan *Philosopher, 2)}
 }
 
 type ForkState struct {
@@ -41,7 +41,7 @@ func (f *Fork) InnerLoop() {
 					//fmt.Println("Fork dismissed", f.id)
 					f.state.inUse = false
 					time.Sleep(time.Second * time.Duration(rand.Intn(4)+3)) //Sleep for between 1 to 3 seconds
-					if len(f.queue) > 1 && !f.state.inUse {
+					if len(f.queue) >= 1 && !f.state.inUse {
 						f.giveForkToNextPhilosopher()
 					}
 				}
