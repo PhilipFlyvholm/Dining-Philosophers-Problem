@@ -90,10 +90,10 @@ func (p *Philosopher) eat() {
 	if p.state.eating {
 		return
 	}
-	fmt.Println(p.id, "Starting to eat")
+	fmt.Println("Philosopher", p.id, "starting to eat")
 	p.state.timesEaten++
 	p.state.eating = true
-	time.Sleep(time.Second * time.Duration(rand.Intn(3)+1)) //Sleep for between 1 to 3 seconds
+	time.Sleep(time.Second * time.Duration(rand.Intn(4)+3)) //Sleep for between 1 to 3 seconds
 	p.think()
 
 }
@@ -101,7 +101,7 @@ func (p *Philosopher) think() {
 	if !p.state.eating {
 		return
 	}
-	fmt.Println(p.id, "Starting to think")
+	fmt.Println("Philosopher", p.id, "starting to think")
 	p.state.eating = false
 	p.deselectForks()
 	p.leftFork.fork.input <- Request{

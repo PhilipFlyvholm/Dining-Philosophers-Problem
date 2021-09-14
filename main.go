@@ -45,9 +45,15 @@ func main() {
 }
 
 func printInfo(seconds int) {
+	fmt.Println("-------------------------")
 	for _, fork := range forks {
-		fork.input <- Request{requestType: printState}
+		fmt.Println("Fork, id:", fork.id, "times used:", fork.state.timesUsed, "in use:", fork.state.inUse)
 	}
+	fmt.Println("-------------------------")
+	for _, phil := range philosophers {
+		fmt.Println("Philosopher, id:", phil.id, "times eaten:", phil.state.timesEaten, "eating:", phil.state.eating)
+	}
+	fmt.Println("-------------------------")
 	time.Sleep(time.Second * time.Duration(seconds))
 	printInfo(seconds)
 }
