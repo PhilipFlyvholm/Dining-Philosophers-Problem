@@ -40,18 +40,25 @@ func (p *Philosopher) InnerLoop(startWithReserve bool) {
 		p.reserveForks()
 	}
 	for {
+		timeout := make(chan bool, 1)
+		go func() {
+			time.Sleep(time.Second * 4)
+			timeout <- true
+		}()
 		select {
 		case fork := <-p.input:
 			var id = fork.id
 			if p.leftFork.fork.id == id {
 				p.leftFork.inHand = true
-			}
-			if p.rightFork.fork.id == id {
+			} else if p.rightFork.fork.id == id {
 				p.rightFork.inHand = true
 			}
 			if p.isBothForksInHand() {
 				p.eat()
 			}
+		case <-timeout:
+			p.think()
+			fmt.Println("Timeout Happened")
 		}
 	}
 }
