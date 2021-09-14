@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"time"
+
+	"github.com/Pallinder/go-randomdata"
 )
 
 var forks []Fork
@@ -22,20 +24,22 @@ func main() {
 	fmt.Println("Welcome to the dining philosophers")
 	var amountOfPhilosophers int = 5
 	amountOfForks := calcNumOfForks(amountOfPhilosophers)
+
 	fmt.Println("At the table we have", amountOfPhilosophers, "philosophers sharing", amountOfForks, "forks")
 	forks = make([]Fork, amountOfForks)
 	for i := 0; i < amountOfForks; i++ {
 		forks[i] = NewFork(i)
 		go forks[i].InnerLoop()
 	}
-	philosophers = make([]Philosopher, 5)
+	philosophers = make([]Philosopher, amountOfPhilosophers)
 	for i := 0; i < amountOfPhilosophers; i++ {
 		var leftForkID = i - 1
 		if leftForkID < 0 {
 			leftForkID = amountOfForks - 1
 		}
 		var rightForkID = i
-		philosophers[i] = NewPhilosopher(i, &forks[leftForkID], &forks[rightForkID])
+
+		philosophers[i] = NewPhilosopher(i, &forks[leftForkID], &forks[rightForkID], (randomdata.FirstName(randomdata.RandomGender) + " " + randomdata.LastName()))
 
 		go philosophers[i].InnerLoop(true)
 	}
@@ -51,7 +55,7 @@ func printInfo(seconds int) {
 	}
 	fmt.Println("-------------------------")
 	for _, phil := range philosophers {
-		fmt.Println("Philosopher, id:", phil.id, "times eaten:", phil.state.timesEaten, "eating:", phil.state.eating)
+		fmt.Println("Philosopher, name:", phil.name, "times eaten:", phil.state.timesEaten, "eating:", phil.state.eating)
 	}
 	fmt.Println("-------------------------")
 	time.Sleep(time.Second * time.Duration(seconds))

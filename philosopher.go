@@ -8,6 +8,7 @@ import (
 
 type Philosopher struct {
 	id        int
+	name      string
 	leftFork  ForkReference
 	rightFork ForkReference
 	state     PhilosopherState
@@ -15,12 +16,13 @@ type Philosopher struct {
 	//output    chan bool
 }
 
-func NewPhilosopher(_id int, _leftFork *Fork, _rightFork *Fork) Philosopher {
+func NewPhilosopher(_id int, _leftFork *Fork, _rightFork *Fork, _name string) Philosopher {
 	return Philosopher{
 		id:        _id,
 		leftFork:  ForkReference{fork: _leftFork},
 		rightFork: ForkReference{fork: _rightFork},
 		input:     make(chan *Fork, 2),
+		name:      _name,
 	}
 }
 
