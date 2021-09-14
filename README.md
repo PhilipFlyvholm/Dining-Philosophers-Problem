@@ -1,5 +1,9 @@
 # Dining-Philosophers-Problem
 
+## Go packages used
+
+We have used the [https://github.com/Pallinder/go-randomdata](https://github.com/Pallinder/go-randomdata) package to add random names to the philosophers
+
 ## New notes
 
 ### Current algo
