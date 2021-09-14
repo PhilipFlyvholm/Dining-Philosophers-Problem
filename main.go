@@ -28,7 +28,7 @@ func main() {
 		forks[i] = NewFork(i)
 		go forks[i].InnerLoop()
 	}
-	philosophers = make([]Philosopher, 5)
+	philosophers = make([]Philosopher, amountOfPhilosophers)
 	for i := 0; i < amountOfPhilosophers; i++ {
 		var leftForkID = i - 1
 		if leftForkID < 0 {
