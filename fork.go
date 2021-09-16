@@ -7,15 +7,14 @@ import (
 )
 
 type Fork struct {
-	id     int
-	state  ForkState
-	input  chan Request
-	queue  chan *Philosopher
-	status chan bool
+	id    int
+	state ForkState
+	input chan Request
+	queue chan *Philosopher
 }
 
 func NewFork(_id int) Fork {
-	return Fork{id: _id, input: make(chan Request, 2), queue: make(chan *Philosopher, 2), status: make(chan bool)}
+	return Fork{id: _id, input: make(chan Request, 2), queue: make(chan *Philosopher, 2)}
 }
 
 type ForkState struct {
