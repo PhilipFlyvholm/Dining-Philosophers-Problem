@@ -12,7 +12,7 @@ type Philosopher struct {
 	rightFork ForkReference
 	state     PhilosopherState
 	input     chan *Fork
-	//output    chan bool
+	status    chan bool
 }
 
 func NewPhilosopher(_id int, _leftFork *Fork, _rightFork *Fork) Philosopher {
@@ -21,6 +21,7 @@ func NewPhilosopher(_id int, _leftFork *Fork, _rightFork *Fork) Philosopher {
 		leftFork:  ForkReference{fork: _leftFork},
 		rightFork: ForkReference{fork: _rightFork},
 		input:     make(chan *Fork, 2),
+		status:    make(chan bool),
 	}
 }
 
@@ -46,6 +47,9 @@ func (p *Philosopher) InnerLoop(startWithReserve bool) {
 			timeout <- true
 		}()
 		select {
+		case <-p.status:
+			fmt.Println("Philosopher, id:", p.id, "times eaten:", p.state.timesEaten, "eating:", p.state.eating)
+
 		case fork := <-p.input:
 			var id = fork.id
 			if p.leftFork.fork.id == id {
@@ -58,7 +62,6 @@ func (p *Philosopher) InnerLoop(startWithReserve bool) {
 			}
 		case <-timeout:
 			p.think()
-			//fmt.Println("Timeout Happened", p.id)
 		}
 	}
 }
@@ -93,7 +96,7 @@ func (p *Philosopher) eat() {
 	fmt.Println("Philosopher", p.id, "starting to eat")
 	p.state.timesEaten++
 	p.state.eating = true
-	time.Sleep(time.Second * time.Duration(rand.Intn(4)+3)) //Sleep for between 1 to 3 seconds
+	time.Sleep(time.Second * time.Duration(rand.Intn(4)+3))
 	p.think()
 
 }
